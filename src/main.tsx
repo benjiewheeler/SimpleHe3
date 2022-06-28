@@ -7,8 +7,10 @@ import { TopBar } from "./Components/TopBar";
 import { AppCtx, BLOCKCHAIN, DAPP_NAME, ENDPOINTS, WAX_CHAIN } from "./constants";
 import "./index.css";
 import { Dashboard } from "./Pages/Dashboard";
+import { Fuel } from "./Pages/Fuel";
 import { Login } from "./Pages/Login";
 import { UAL } from "./types";
+import { getStorageItem } from "./utils";
 
 function SimpleHe3(): JSX.Element {
 	const { ual } = useContext(AppCtx);
@@ -25,6 +27,7 @@ function SimpleHe3(): JSX.Element {
 				<Switch>
 					<Route path="/dashboard" render={() => <Dashboard />} />
 					<Route path="/login" render={() => <Login />} />
+					<Route path="/fuel/:asset" render={props => <Fuel asset={props.match.params.asset} />} />
 				</Switch>
 			</BrowserRouter>
 		</>
@@ -32,11 +35,12 @@ function SimpleHe3(): JSX.Element {
 }
 
 export default function App(props: React.PropsWithChildren<{ ual?: UAL }>): JSX.Element {
-	const [waxEndpoint, setWAXEndpoint] = useState<string>(ENDPOINTS.API[0]);
-	const [atomicEndpoint, setAtomicEndpoint] = useState<string>(ENDPOINTS.ATOMIC[0]);
+	const [waxEndpoint, setWAXEndpoint] = useState<string>(getStorageItem<string>("wax_endpoint", ENDPOINTS.API[0]));
+	const [atomicEndpoint, setAtomicEndpoint] = useState<string>(getStorageItem<string>("atomic_endpoint", ENDPOINTS.ATOMIC[0]));
+	const [refreshNonce, forceRefresh] = useState<number>(Math.random());
 
 	return (
-		<AppCtx.Provider value={{ ual: props.ual, waxEndpoint, atomicEndpoint, setWAXEndpoint, setAtomicEndpoint }}>
+		<AppCtx.Provider value={{ ual: props.ual, waxEndpoint, setWAXEndpoint, atomicEndpoint, setAtomicEndpoint, refreshNonce, forceRefresh }}>
 			{props.children}
 		</AppCtx.Provider>
 	);

@@ -2,6 +2,7 @@ import { Wax as WCW } from "@eosdacio/ual-wax";
 import React from "react";
 import { Anchor } from "ual-anchor";
 import { UAL } from "./types";
+import { getStorageItem } from "./utils";
 
 export const ENDPOINTS = {
 	ATOMIC: [
@@ -60,10 +61,15 @@ export const RARITIES = {
 
 export interface AppContextInterface {
 	ual: UAL;
+
 	waxEndpoint: string;
-	atomicEndpoint: string;
 	setWAXEndpoint: (endpoint: string) => void;
+
+	atomicEndpoint: string;
 	setAtomicEndpoint: (endpoint: string) => void;
+
+	refreshNonce: number;
+	forceRefresh: (nonce: number) => void;
 }
 
 export const AppCtx = React.createContext<AppContextInterface>(null);
@@ -72,7 +78,7 @@ export const DAPP_NAME = "simplehe3";
 
 export const WAX_CHAIN = {
 	chainId: "1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4",
-	rpcEndpoints: [{ protocol: "https", host: "wax.eosphere.io", port: 443 }],
+	rpcEndpoints: [{ protocol: "https", host: getStorageItem<string>("wax_endpoint", ENDPOINTS.API[0]), port: 443 }],
 };
 
 export const BLOCKCHAIN = {

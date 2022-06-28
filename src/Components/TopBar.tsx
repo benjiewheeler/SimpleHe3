@@ -1,8 +1,28 @@
 import React, { useContext } from "react";
 import { AppCtx, ENDPOINTS } from "../constants";
+import { setStorageItem } from "../utils";
 
 export function TopBar() {
 	const { ual, waxEndpoint, setWAXEndpoint, atomicEndpoint, setAtomicEndpoint } = useContext(AppCtx);
+
+	const saveWAXEndpoint = async (endpoint: string) => {
+		setWAXEndpoint(endpoint);
+		setStorageItem<string>("wax_endpoint", endpoint, 0);
+
+		setStorageItem("tools", null, -1);
+		setStorageItem("toolconfigs", null, -1);
+
+		location.reload();
+	};
+
+	const saveAtomicEndpoint = async (endpoint: string) => {
+		setAtomicEndpoint(endpoint);
+		setStorageItem<string>("atomic_endpoint", endpoint, 0);
+
+		setStorageItem("templates", null, -1);
+
+		location.reload();
+	};
 
 	return (
 		<div className="p-2 bg-gray-700 flex flex-row flex-wrap">
@@ -17,7 +37,7 @@ export function TopBar() {
 				<select
 					className="bg-transparent border border-gray-500 rounded text-gray-400 text-xs font-mono mb-1"
 					value={waxEndpoint}
-					onChange={e => setWAXEndpoint(e.target.value)}
+					onChange={e => saveWAXEndpoint(e.target.value)}
 				>
 					{ENDPOINTS.API.map(endpoint => (
 						<option className="text-black" key={endpoint} value={endpoint}>
@@ -28,7 +48,7 @@ export function TopBar() {
 				<select
 					className="bg-transparent border border-gray-500 rounded text-gray-400 text-xs font-mono"
 					value={atomicEndpoint}
-					onChange={e => setAtomicEndpoint(e.target.value)}
+					onChange={e => saveAtomicEndpoint(e.target.value)}
 				>
 					{ENDPOINTS.ATOMIC.map(endpoint => (
 						<option className="text-black" key={endpoint} value={endpoint}>

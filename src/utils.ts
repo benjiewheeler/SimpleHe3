@@ -1,6 +1,5 @@
 import axios from "axios";
-import { BLOCKCHAIN } from "./constants";
-import { AssetTemplate, CacheObject, ContractAsset, Token, Tool, ToolConfig } from "./types";
+import { AssetTemplate, CacheObject, ContractAsset, Token, ToolConfig } from "./types";
 
 /**
  * Store data in the browser's localStorage
@@ -51,6 +50,10 @@ export const formatTokenDisplay = (token: Token): string => {
 	return `${token.amount.toLocaleString("en", { useGrouping: true, maximumFractionDigits: 4 })} ${token.symbol}`;
 };
 
+export const formatTokenContract = (token: Token): string => {
+	return `${token.amount.toLocaleString("en", { useGrouping: false, minimumFractionDigits: 4 })} ${token.symbol}`;
+};
+
 export const adjustTokenSymbol = (token: Token): Token => {
 	const MAP = { HEL: "He3", HTWO: "H2", MWH: "MWh", OTWO: "O2", WATER: "H2O" };
 	return { amount: token.amount, symbol: MAP[token.symbol] || token.symbol };
@@ -77,7 +80,7 @@ export const fetchTemplates = async (endpoint: string): Promise<AssetTemplate[]>
 		schema_name: t.schema.schema_name,
 	}));
 
-	setStorageItem<AssetTemplate[]>(`templates`, templates, 0);
+	setStorageItem<AssetTemplate[]>(`templates`, templates, 86400);
 	return templates;
 };
 
@@ -142,4 +145,24 @@ export const fetchToolConfigs = async (endpoint: string): Promise<ToolConfig[]> 
 
 	setStorageItem<ToolConfig[]>(`toolconfigs`, tools, 3600);
 	return tools;
+};
+
+export const fetchPlayerBalances = async (account: string, endpoint: string): Promise<Token[]> => {
+	const response = await axios.post(
+		`https://${endpoint}/v1/chain/get_table_rows`,
+		{
+			code: "moonmhe3game",
+			scope: account,
+			table: "balances",
+			limit: 10,
+			json: true,
+		},
+		{
+			responseType: "json",
+			headers: { "Content-Type": "application/json;charset=UTF-8" },
+		}
+	);
+
+	const balances = [...response.data.rows].map<Token>(row => parseToken(row.balance));
+	return balances;
 };
