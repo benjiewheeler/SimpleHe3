@@ -50,19 +50,14 @@ export function Fuel(props: { asset: string }): JSX.Element {
 		setBalances(bals);
 	};
 
-	const fuelAsset = async (tool: Tool, quantities: Token[]): Promise<void> => {
-		if (!quantities.filter(tok => tok.amount > 0).length) {
-			alert("You must deposit at least 1 resource");
-			return;
-		}
-
+	const performAction = async (name: string, tool: Tool, quantities: Token[]): Promise<boolean> => {
 		const res: SignTransactionResponse | Error = await ual.activeUser
 			.signTransaction(
 				{
 					actions: [
 						{
 							account: BLOCKCHAIN.DAPP_CONTRACT,
-							name: "deposittkn",
+							name,
 							authorization: [{ actor: ual.activeUser.accountName, permission: ual.activeUser.requestPermission }],
 							data: {
 								player: ual.activeUser.accountName,
@@ -78,11 +73,42 @@ export function Fuel(props: { asset: string }): JSX.Element {
 			.catch(error => error);
 
 		if (res instanceof Error) {
-			// showPopup("error", res.message);
 			alert(res.message);
+			return false;
 		} else {
+			return true;
+		}
+	};
+
+	const depositAssets = async (tool: Tool, quantities: Token[]): Promise<void> => {
+		if (!quantities.filter(tok => tok.amount > 0).length) {
+			alert("You must deposit at least 1 resource");
+			return;
+		}
+
+		const success = await performAction("deposittkn", tool, quantities);
+
+		if (success) {
 			// showPopup("success", "Asset removed successfully");
 			alert("Tokens deposited successfully");
+			history.push("/dashboard");
+
+			setStorageItem("tools", null, -1);
+			forceRefresh(Math.random());
+		}
+	};
+
+	const withdrawAssets = async (tool: Tool, quantities: Token[]): Promise<void> => {
+		if (!quantities.filter(tok => tok.amount > 0).length) {
+			alert("You must withdraw at least 1 resource");
+			return;
+		}
+
+		const success = await performAction("withdraw", tool, quantities);
+
+		if (success) {
+			// showPopup("success", "Asset removed successfully");
+			alert("Tokens withdrawn successfully");
 			history.push("/dashboard");
 
 			setStorageItem("tools", null, -1);
@@ -148,12 +174,18 @@ export function Fuel(props: { asset: string }): JSX.Element {
 							</div>
 						))}
 					</div>
-					<div className="flex flex-col p-4">
+					<div className="flex flex-row p-4">
 						<button
-							onClick={() => fuelAsset(tool, balances)}
-							className="flex-1 p-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
+							onClick={() => depositAssets(tool, balances)}
+							className="mx-0.5 flex-1 p-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
 						>
 							Deposit
+						</button>
+						<button
+							onClick={() => withdrawAssets(tool, balances)}
+							className="mx-0.5 flex-1 p-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
+						>
+							Withdraw
 						</button>
 					</div>
 				</div>
