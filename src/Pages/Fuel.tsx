@@ -195,6 +195,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 							Deposit
 						</button>
 						<button
+							disabled
 							onClick={() => withdrawAssets(tool, Object.values(balances))}
 							className="mx-0.5 flex-1 p-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
 						>
