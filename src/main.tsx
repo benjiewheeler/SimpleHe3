@@ -16,8 +16,6 @@ import { getStorageItem } from "./utils";
 function SimpleHe3(): JSX.Element {
 	const { ual } = useContext(AppCtx);
 
-	useEffect(() => {}, []);
-
 	return (
 		<>
 			<BrowserRouter>
