@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { SignTransactionResponse } from "universal-authenticator-library";
@@ -18,7 +19,7 @@ import {
 export function Fuel(props: { asset: string }): JSX.Element {
 	const { ual, waxEndpoint, atomicEndpoint, forceRefresh } = useContext(AppCtx);
 	const [accountBalances, setAccountBalances] = useState<Token[]>(null);
-	const [balances, setBalances] = useState<Token[]>([]);
+	const [balances, setBalances] = useState<Record<string, Token>>({});
 	const [tool, setTool] = useState<Tool>(null);
 	const history = useHistory();
 
@@ -41,12 +42,19 @@ export function Fuel(props: { asset: string }): JSX.Element {
 
 		const balanceList = await fetchPlayerBalances(ual.activeUser.accountName, waxEndpoint);
 		setAccountBalances(balanceList);
-		setBalances(balanceList.map(tok => ({ ...tok, amount: 0 })));
+		setBalances(
+			_(balanceList)
+				.map(tok => [tok.symbol, { ...tok, amount: 0 }])
+				.fromPairs()
+				.value()
+		);
 	};
 
-	const updateBalance = (index: number, amount: number) => {
-		const bals = [...balances];
-		bals[index].amount = amount;
+	const updateBalance = (symbol: string, amount: number) => {
+		const bals = { ...balances };
+		console.log(bals);
+		bals[symbol].amount = amount;
+		console.log(bals);
 		setBalances(bals);
 	};
 
@@ -116,7 +124,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 		}
 	};
 
-	if (!accountBalances?.length || !balances?.length || !tool)
+	if (!accountBalances || !tool)
 		return (
 			<div className="flex flex-col flex-grow h-full w-full p-4 text-center">
 				<span className="text-white text-base">Loading...</span>
@@ -157,32 +165,37 @@ export function Fuel(props: { asset: string }): JSX.Element {
 
 				<div className="flex flex-col p-4">
 					<div className="flex flex-col p-4">
-						{accountBalances.map((tok, i) => (
-							<div key={`fuel-tok-${i}`} className="flex flex-col mb-2">
-								<span className="text-xs text-white py-1 cursor-pointer" onClick={() => updateBalance(i, Number(tok.amount))}>
-									{tok.symbol} ({formatTokenDisplay(adjustTokenSymbol(tok))})
-								</span>
-								<input
-									type="number"
-									min={0}
-									max={tok.amount}
-									step={1}
-									value={balances[i]?.amount}
-									onChange={e => updateBalance(i, parseFloat(e.target.value))}
-									className="text-sm bg-transparent text-white border border-gray-700 rounded outline-none p-1"
-								/>
-							</div>
-						))}
+						{accountBalances
+							.filter(tok => tool.token_input.map(output => parseToken(output)).find(inp => inp.symbol == tok.symbol))
+							.map((tok, i) => (
+								<div key={`fuel-tok-${tok.symbol}`} className="flex flex-col mb-2">
+									<span
+										className="text-xs text-white py-1 cursor-pointer"
+										onClick={() => updateBalance(tok.symbol, Number(tok.amount))}
+									>
+										{tok.symbol} ({formatTokenDisplay(adjustTokenSymbol(tok))})
+									</span>
+									<input
+										type="number"
+										min={0}
+										max={tok.amount}
+										step={1}
+										value={balances[i]?.amount}
+										onChange={e => updateBalance(tok.symbol, parseFloat(e.target.value))}
+										className="text-sm bg-transparent text-white border border-gray-700 rounded outline-none p-1"
+									/>
+								</div>
+							))}
 					</div>
 					<div className="flex flex-row p-4">
 						<button
-							onClick={() => depositAssets(tool, balances)}
+							onClick={() => depositAssets(tool, Object.values(balances))}
 							className="mx-0.5 flex-1 p-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
 						>
 							Deposit
 						</button>
 						<button
-							onClick={() => withdrawAssets(tool, balances)}
+							onClick={() => withdrawAssets(tool, Object.values(balances))}
 							className="mx-0.5 flex-1 p-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
 						>
 							Withdraw

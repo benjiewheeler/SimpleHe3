@@ -28,7 +28,7 @@ export type AssetTemplate = {
 	rarity: string;
 };
 
-export type MineralAsset = {
+export type AtomicAsset = {
 	asset_id: string;
 	name: string;
 	mint: number;
@@ -64,7 +64,7 @@ export type ShopConfig = {
 };
 
 export type Tool = AssetTemplate & ToolConfig & ContractAsset;
-export type Mineral = AssetTemplate & MineralAsset;
+export type Mineral = AssetTemplate & AtomicAsset;
 
 export type Token = {
 	symbol: string;

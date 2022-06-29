@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AssetTemplate, CacheObject, ContractAsset, MineralAsset, ShopConfig, Token, ToolConfig } from "./types";
+import { AssetTemplate, CacheObject, ContractAsset, AtomicAsset, ShopConfig, Token, ToolConfig } from "./types";
 
 /**
  * Store data in the browser's localStorage
@@ -114,8 +114,8 @@ export const fetchPlayerTools = async (account: string, endpoint: string): Promi
 	return tools;
 };
 
-export const fetchPlayerMinerals = async (account: string, endpoint: string): Promise<MineralAsset[]> => {
-	const cache = getStorageItem<MineralAsset[]>(`minerals.${account}`, null);
+export const fetchPlayerMinerals = async (account: string, endpoint: string): Promise<AtomicAsset[]> => {
+	const cache = getStorageItem<AtomicAsset[]>(`minerals.${account}`, null);
 	if (cache) {
 		return cache;
 	}
@@ -128,13 +128,13 @@ export const fetchPlayerMinerals = async (account: string, endpoint: string): Pr
 			page: 1,
 			limit: 1000,
 			order: "desc",
-			sort: "created",
+			sort: "transferred",
 		},
 		responseType: "json",
 		headers: { "Content-Type": "application/json;charset=UTF-8" },
 	});
 
-	const minerals = [...response.data.data].map<MineralAsset>(t => ({
+	const minerals = [...response.data.data].map<AtomicAsset>(t => ({
 		asset_id: t.asset_id,
 		img: t.data.img,
 		mint: Number(t.template_mint),
@@ -144,7 +144,7 @@ export const fetchPlayerMinerals = async (account: string, endpoint: string): Pr
 		schema_name: t.schema.schema_name,
 	}));
 
-	setStorageItem<MineralAsset[]>(`minerals.${account}`, minerals, 60);
+	setStorageItem<AtomicAsset[]>(`minerals.${account}`, minerals, 60);
 	return minerals;
 };
 
@@ -228,4 +228,37 @@ export const fetchShopConfigs = async (endpoint: string): Promise<ShopConfig[]> 
 
 	setStorageItem<ShopConfig[]>(`shopconfigs`, items, 3600);
 	return items;
+};
+
+export const fetchPlayerAssets = async (account: string, endpoint: string): Promise<AtomicAsset[]> => {
+	const cache = getStorageItem<AtomicAsset[]>(`assets.${account}`, null);
+	if (cache) {
+		return cache;
+	}
+
+	const response = await axios.get(`https://${endpoint}/atomicassets/v1/assets`, {
+		params: {
+			collection_name: "moonminingh3",
+			owner: account,
+			page: 1,
+			limit: 1000,
+			order: "desc",
+			sort: "transferred",
+		},
+		responseType: "json",
+		headers: { "Content-Type": "application/json;charset=UTF-8" },
+	});
+
+	const assets = [...response.data.data].map<AtomicAsset>(t => ({
+		asset_id: t.asset_id,
+		img: t.data.img,
+		mint: Number(t.template_mint),
+		name: t.data.name,
+		rarity: t.data.rarity,
+		template_id: t.template.template_id,
+		schema_name: t.schema.schema_name,
+	}));
+
+	setStorageItem<AtomicAsset[]>(`assets.${account}`, assets, 60);
+	return assets;
 };

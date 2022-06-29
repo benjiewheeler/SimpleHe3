@@ -5,7 +5,7 @@ import { setStorageItem } from "../utils";
 
 export function TopBar() {
 	const { ual, waxEndpoint, setWAXEndpoint, atomicEndpoint, setAtomicEndpoint } = useContext(AppCtx);
-	const routerMatch = useRouteMatch(["/dashboard", "/minerals"]);
+	const routerMatch = useRouteMatch(["/dashboard", "/minerals", "/inventory"]);
 
 	const saveWAXEndpoint = async (endpoint: string) => {
 		setWAXEndpoint(endpoint);
@@ -21,8 +21,9 @@ export function TopBar() {
 		setAtomicEndpoint(endpoint);
 		setStorageItem<string>("atomic_endpoint", endpoint, 0);
 
-		setStorageItem(`templates.${ual.activeUser?.accountName}`, null, -1);
+		setStorageItem(`templates`, null, -1);
 		setStorageItem(`minerals.${ual.activeUser?.accountName}`, null, -1);
+		setStorageItem(`assets.${ual.activeUser?.accountName}`, null, -1);
 
 		location.reload();
 	};
@@ -95,6 +96,14 @@ export function TopBar() {
 						to={"/minerals"}
 					>
 						Minerals
+					</Link>
+					<Link
+						className={`mx-0.5 py-1 px-2 text-gray-400 hover:bg-gray-900 ${
+							routerMatch?.path == "/inventory" ? "bg-slate-800" : ""
+						}`}
+						to={"/inventory"}
+					>
+						Inventory
 					</Link>
 				</div>
 			)}

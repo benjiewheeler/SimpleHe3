@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, MemoryRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import "regenerator-runtime/runtime";
@@ -8,6 +8,7 @@ import { AppCtx, BLOCKCHAIN, DAPP_NAME, ENDPOINTS, WAX_CHAIN } from "./constants
 import "./index.css";
 import { Dashboard } from "./Pages/Dashboard";
 import { Fuel } from "./Pages/Fuel";
+import { Inventory } from "./Pages/Inventory";
 import { Login } from "./Pages/Login";
 import { Minerals } from "./Pages/Minerals";
 import { UAL } from "./types";
@@ -26,6 +27,7 @@ function SimpleHe3(): JSX.Element {
 					<Route path="/login" render={() => <Login />} />
 					<Route path="/fuel/:asset" render={props => <Fuel asset={props.match.params.asset} />} />
 					<Route path="/minerals" render={() => <Minerals />} />
+					<Route path="/inventory" render={() => <Inventory />} />
 				</Switch>
 
 				{!ual.activeUser && <Redirect to="/login" />}

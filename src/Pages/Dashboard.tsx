@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Countdown from "react-countdown";
 import { Link } from "react-router-dom";
 import { SignTransactionResponse } from "universal-authenticator-library";
-import { AppCtx, BLOCKCHAIN, RARITIES } from "../constants";
+import { AppCtx, BLOCKCHAIN, BUILDING_SCHEMAS, MACHINE_SCHEMAS, RARITIES } from "../constants";
 import { Tool } from "../types";
 import {
 	adjustTokenSymbol,
@@ -28,13 +28,8 @@ export function Dashboard(): JSX.Element {
 		const tools = await fetchPlayerTools(ual.activeUser.accountName, waxEndpoint);
 		const toolConfigs = await fetchToolConfigs(waxEndpoint);
 
-		const buildingTemplates = templates
-			.filter(t => ["buildingphoe", "buildingaqua", "buildingterr", "buildingpega"].includes(t.schema_name))
-			.map(t => Number(t.template_id));
-
-		const machineTemplates = templates
-			.filter(t => ["machinephoe", "machineaqua", "machineterra"].includes(t.schema_name))
-			.map(t => Number(t.template_id));
+		const buildingTemplates = templates.filter(t => BUILDING_SCHEMAS.includes(t.schema_name)).map(t => Number(t.template_id));
+		const machineTemplates = templates.filter(t => MACHINE_SCHEMAS.includes(t.schema_name)).map(t => Number(t.template_id));
 
 		setBuildings(
 			tools
@@ -81,6 +76,7 @@ export function Dashboard(): JSX.Element {
 			// showPopup("success", "Asset removed successfully");
 			alert("Asset removed successfully");
 			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
+			setStorageItem(`assets.${ual.activeUser?.accountName}`, null, -1);
 			refresh();
 		}
 	};
