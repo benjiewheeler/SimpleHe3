@@ -80,7 +80,7 @@ export function Dashboard(): JSX.Element {
 		} else {
 			// showPopup("success", "Asset removed successfully");
 			alert("Asset removed successfully");
-			setStorageItem("tools", null, -1);
+			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
 			refresh();
 		}
 	};

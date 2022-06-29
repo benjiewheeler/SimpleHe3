@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AssetTemplate, CacheObject, ContractAsset, Token, ToolConfig } from "./types";
+import { AssetTemplate, CacheObject, ContractAsset, MineralAsset, ShopConfig, Token, ToolConfig } from "./types";
 
 /**
  * Store data in the browser's localStorage
@@ -75,7 +75,6 @@ export const fetchTemplates = async (endpoint: string): Promise<AssetTemplate[]>
 		img: t.immutable_data.img,
 		name: t.immutable_data.name,
 		rarity: t.immutable_data.rarity,
-		shine: t.immutable_data.shine,
 		template_id: t.template_id,
 		schema_name: t.schema.schema_name,
 	}));
@@ -85,7 +84,7 @@ export const fetchTemplates = async (endpoint: string): Promise<AssetTemplate[]>
 };
 
 export const fetchPlayerTools = async (account: string, endpoint: string): Promise<ContractAsset[]> => {
-	const cache = getStorageItem<ContractAsset[]>(`tools`, null);
+	const cache = getStorageItem<ContractAsset[]>(`tools.${account}`, null);
 	if (cache) {
 		return cache;
 	}
@@ -111,8 +110,42 @@ export const fetchPlayerTools = async (account: string, endpoint: string): Promi
 
 	const tools = [...response.data.rows].map<ContractAsset>(t => ({ ...t, token_reserve: t.token_in }));
 
-	setStorageItem<ContractAsset[]>(`tools`, tools, 60);
+	setStorageItem<ContractAsset[]>(`tools.${account}`, tools, 60);
 	return tools;
+};
+
+export const fetchPlayerMinerals = async (account: string, endpoint: string): Promise<MineralAsset[]> => {
+	const cache = getStorageItem<MineralAsset[]>(`minerals.${account}`, null);
+	if (cache) {
+		return cache;
+	}
+
+	const response = await axios.get(`https://${endpoint}/atomicassets/v1/assets`, {
+		params: {
+			collection_name: "moonminingh3",
+			schema_name: "moon.mineral",
+			owner: account,
+			page: 1,
+			limit: 1000,
+			order: "desc",
+			sort: "created",
+		},
+		responseType: "json",
+		headers: { "Content-Type": "application/json;charset=UTF-8" },
+	});
+
+	const minerals = [...response.data.data].map<MineralAsset>(t => ({
+		asset_id: t.asset_id,
+		img: t.data.img,
+		mint: Number(t.template_mint),
+		name: t.data.name,
+		rarity: t.data.rarity,
+		template_id: t.template.template_id,
+		schema_name: t.schema.schema_name,
+	}));
+
+	setStorageItem<MineralAsset[]>(`minerals.${account}`, minerals, 60);
+	return minerals;
 };
 
 export const fetchToolConfigs = async (endpoint: string): Promise<ToolConfig[]> => {
@@ -165,4 +198,34 @@ export const fetchPlayerBalances = async (account: string, endpoint: string): Pr
 
 	const balances = [...response.data.rows].map<Token>(row => parseToken(row.balance));
 	return balances;
+};
+
+export const fetchShopConfigs = async (endpoint: string): Promise<ShopConfig[]> => {
+	const cache = getStorageItem<ShopConfig[]>(`shopconfigs`, null);
+	if (cache) {
+		return cache;
+	}
+
+	const response = await axios.post(
+		`https://${endpoint}/v1/chain/get_table_rows`,
+		{
+			code: "moonmhe3game",
+			scope: "moonmhe3game",
+			table: "shop",
+			limit: 20,
+			json: true,
+		},
+		{
+			responseType: "json",
+			headers: { "Content-Type": "application/json;charset=UTF-8" },
+		}
+	);
+
+	const items = [...response.data.rows].map<ShopConfig>(({ template_id, price }) => ({
+		template_id,
+		price: parseToken(price),
+	}));
+
+	setStorageItem<ShopConfig[]>(`shopconfigs`, items, 3600);
+	return items;
 };

@@ -9,6 +9,7 @@ import "./index.css";
 import { Dashboard } from "./Pages/Dashboard";
 import { Fuel } from "./Pages/Fuel";
 import { Login } from "./Pages/Login";
+import { Minerals } from "./Pages/Minerals";
 import { UAL } from "./types";
 import { getStorageItem } from "./utils";
 
@@ -19,16 +20,18 @@ function SimpleHe3(): JSX.Element {
 
 	return (
 		<>
-			<TopBar />
-
 			<BrowserRouter>
-				{!ual.activeUser && <Redirect to="/login" />}
-				{ual.activeUser && <Redirect to="/dashboard" />}
+				<TopBar />
+
 				<Switch>
 					<Route path="/dashboard" render={() => <Dashboard />} />
 					<Route path="/login" render={() => <Login />} />
 					<Route path="/fuel/:asset" render={props => <Fuel asset={props.match.params.asset} />} />
+					<Route path="/minerals" render={() => <Minerals />} />
 				</Switch>
+
+				{!ual.activeUser && <Redirect to="/login" />}
+				{ual.activeUser && <Redirect to="/dashboard" />}
 			</BrowserRouter>
 		</>
 	);

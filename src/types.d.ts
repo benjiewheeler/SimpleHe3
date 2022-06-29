@@ -26,7 +26,16 @@ export type AssetTemplate = {
 	schema_name: string;
 	template_id: number;
 	rarity: string;
-	shine: string;
+};
+
+export type MineralAsset = {
+	asset_id: string;
+	name: string;
+	mint: number;
+	img: string;
+	schema_name: string;
+	template_id: number;
+	rarity: string;
 };
 
 export type ContractAsset = {
@@ -49,7 +58,13 @@ export type ToolConfig = {
 	rarityID: number;
 };
 
+export type ShopConfig = {
+	template_id: number;
+	price: Token;
+};
+
 export type Tool = AssetTemplate & ToolConfig & ContractAsset;
+export type Mineral = AssetTemplate & MineralAsset;
 
 export type Token = {
 	symbol: string;

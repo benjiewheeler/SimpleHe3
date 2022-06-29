@@ -93,7 +93,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 			alert("Tokens deposited successfully");
 			history.push("/dashboard");
 
-			setStorageItem("tools", null, -1);
+			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
 			forceRefresh(Math.random());
 		}
 	};
@@ -111,12 +111,12 @@ export function Fuel(props: { asset: string }): JSX.Element {
 			alert("Tokens withdrawn successfully");
 			history.push("/dashboard");
 
-			setStorageItem("tools", null, -1);
+			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
 			forceRefresh(Math.random());
 		}
 	};
 
-	if (!accountBalances || !tool)
+	if (!accountBalances?.length || !balances?.length || !tool)
 		return (
 			<div className="flex flex-col flex-grow h-full w-full p-4 text-center">
 				<span className="text-white text-base">Loading...</span>
@@ -166,8 +166,8 @@ export function Fuel(props: { asset: string }): JSX.Element {
 									type="number"
 									min={0}
 									max={tok.amount}
-									step={0.0001}
-									defaultValue={balances[i]?.amount}
+									step={1}
+									value={balances[i]?.amount}
 									onChange={e => updateBalance(i, parseFloat(e.target.value))}
 									className="text-sm bg-transparent text-white border border-gray-700 rounded outline-none p-1"
 								/>
