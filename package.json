@@ -10,7 +10,7 @@
 			"url": "https://github.com/benjiewheeler"
 		}
 	],
-	"license": "MIT",
+	"license": "Unlicense",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
