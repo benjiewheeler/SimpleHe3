@@ -7,7 +7,7 @@ import _ from "lodash";
 import { Loader } from "../Components/Loader";
 
 export function Inventory(): JSX.Element {
-	const { ual, waxEndpoint, atomicEndpoint, refreshNonce } = useContext(AppCtx);
+	const { ual, waxEndpoint, atomicEndpoint, refreshNonce, setAlert } = useContext(AppCtx);
 	const [buildings, setBuildings] = useState<AtomicAsset[]>(null);
 	const [machines, setMachines] = useState<AtomicAsset[]>(null);
 	const [usedTools, setUsedTools] = useState<ContractAsset[]>([]);
@@ -45,10 +45,10 @@ export function Inventory(): JSX.Element {
 
 		if (res instanceof Error) {
 			// showPopup("error", res.message);
-			alert(res.message);
+			setAlert(res.message, "red-900");
 		} else {
 			// showPopup("success", "Asset removed successfully");
-			alert("Asset installed successfully");
+			setAlert("Asset installed successfully", "lime-800");
 			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
 			setStorageItem(`assets.${ual.activeUser?.accountName}`, null, -1);
 			refresh();

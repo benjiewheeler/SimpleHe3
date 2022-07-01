@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Countdown from "react-countdown";
 import { Link } from "react-router-dom";
 import { SignTransactionResponse } from "universal-authenticator-library";
+import { Alert } from "../Components/Alert";
 import { Loader } from "../Components/Loader";
 import { AppCtx, BLOCKCHAIN, BUILDING_SCHEMAS, MACHINE_SCHEMAS, RARITIES } from "../constants";
 import { Tool } from "../types";
@@ -16,7 +17,7 @@ import {
 } from "../utils";
 
 export function Dashboard(): JSX.Element {
-	const { ual, waxEndpoint, atomicEndpoint, refreshNonce } = useContext(AppCtx);
+	const { ual, waxEndpoint, atomicEndpoint, refreshNonce, setAlert } = useContext(AppCtx);
 	const [buildings, setBuildings] = useState<Tool[]>(null);
 	const [machines, setMachines] = useState<Tool[]>(null);
 
@@ -72,10 +73,10 @@ export function Dashboard(): JSX.Element {
 
 		if (res instanceof Error) {
 			// showPopup("error", res.message);
-			alert(res.message);
+			setAlert(res.message, "red-900");
 		} else {
 			// showPopup("success", "Asset removed successfully");
-			alert("Asset removed successfully");
+			setAlert("Asset removed successfully", "lime-800");
 			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
 			setStorageItem(`assets.${ual.activeUser?.accountName}`, null, -1);
 			refresh();

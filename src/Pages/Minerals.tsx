@@ -14,7 +14,7 @@ import {
 } from "../utils";
 
 export function Minerals(): JSX.Element {
-	const { ual, atomicEndpoint, waxEndpoint } = useContext(AppCtx);
+	const { ual, atomicEndpoint, waxEndpoint, setAlert } = useContext(AppCtx);
 	const [accountBalances, setAccountBalances] = useState<Token[]>(null);
 	const [balances, setBalances] = useState<Token[]>([]);
 	const [minerals, setMinerals] = useState<Mineral[]>([]);
@@ -69,9 +69,9 @@ export function Minerals(): JSX.Element {
 			.catch(error => error);
 
 		if (res instanceof Error) {
-			alert(res.message);
+			setAlert(res.message, "red-900");
 		} else {
-			alert("Mineral burned successfully");
+			setAlert("Mineral burned successfully", "lime-800");
 			setStorageItem(`minerals.${ual.activeUser?.accountName}`, null, -1);
 			fetchData();
 		}
@@ -100,9 +100,9 @@ export function Minerals(): JSX.Element {
 			.catch(error => error);
 
 		if (res instanceof Error) {
-			alert(res.message);
+			setAlert(res.message, "red-900");
 		} else {
-			alert("Mineral minted successfully");
+			setAlert("Mineral minted successfully", "lime-800");
 			setStorageItem(`minerals.${ual.activeUser?.accountName}`, null, -1);
 			fetchData();
 		}

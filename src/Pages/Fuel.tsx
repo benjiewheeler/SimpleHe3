@@ -18,7 +18,7 @@ import {
 } from "../utils";
 
 export function Fuel(props: { asset: string }): JSX.Element {
-	const { ual, waxEndpoint, atomicEndpoint, forceRefresh } = useContext(AppCtx);
+	const { ual, waxEndpoint, atomicEndpoint, forceRefresh, setAlert } = useContext(AppCtx);
 	const [accountBalances, setAccountBalances] = useState<Token[]>(null);
 	const [balances, setBalances] = useState<Record<string, Token>>({});
 	const [tool, setTool] = useState<Tool>(null);
@@ -82,7 +82,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 			.catch(error => error);
 
 		if (res instanceof Error) {
-			alert(res.message);
+			setAlert(res.message, "red-900");
 			return false;
 		} else {
 			return true;
@@ -91,7 +91,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 
 	const depositAssets = async (tool: Tool, quantities: Token[]): Promise<void> => {
 		if (!quantities.filter(tok => tok.amount > 0).length) {
-			alert("You must deposit at least 1 resource");
+			setAlert("You must deposit at least 1 resource", "red-900");
 			return;
 		}
 
@@ -99,7 +99,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 
 		if (success) {
 			// showPopup("success", "Asset removed successfully");
-			alert("Tokens deposited successfully");
+			setAlert("Tokens deposited successfully", "lime-800");
 			history.push("/dashboard");
 
 			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
@@ -109,7 +109,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 
 	const withdrawAssets = async (tool: Tool, quantities: Token[]): Promise<void> => {
 		if (!quantities.filter(tok => tok.amount > 0).length) {
-			alert("You must withdraw at least 1 resource");
+			setAlert("You must withdraw at least 1 resource", "red-900");
 			return;
 		}
 
@@ -117,7 +117,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 
 		if (success) {
 			// showPopup("success", "Asset removed successfully");
-			alert("Tokens withdrawn successfully");
+			setAlert("Tokens withdrawn successfully", "lime-800");
 			history.push("/dashboard");
 
 			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);

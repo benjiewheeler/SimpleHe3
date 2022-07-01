@@ -67,6 +67,11 @@ export interface AppContextInterface {
 
 	refreshNonce: number;
 	forceRefresh: (nonce: number) => void;
+
+	alertColor: string;
+	alertMessage: string;
+
+	setAlert: (message: string, color: string) => void;
 }
 
 export const AppCtx = React.createContext<AppContextInterface>(null);
