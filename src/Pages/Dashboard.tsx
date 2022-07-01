@@ -72,13 +72,51 @@ export function Dashboard(): JSX.Element {
 			.catch(error => error);
 
 		if (res instanceof Error) {
-			// showPopup("error", res.message);
 			setAlert(res.message, "red-900");
 		} else {
-			// showPopup("success", "Asset removed successfully");
 			setAlert("Asset removed successfully", "lime-800");
 			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
 			setStorageItem(`assets.${ual.activeUser?.accountName}`, null, -1);
+			refresh();
+		}
+	};
+
+	const claimReady = async (tools: Tool[]): Promise<void> => {
+		const ready = tools
+			.filter(tool => (tool.last_claim + tool.delay) * 1e3 < Date.now())
+			.filter(tool =>
+				tool.token_reserve
+					.map(res => parseToken(res))
+					.every(res => res.amount >= tool.token_input.map(inp => parseToken(inp)).find(inp => inp.symbol == res.symbol).amount)
+			);
+
+		if (!ready.length) {
+			setAlert("No assets are ready yet", "red-900");
+			return;
+		}
+
+		const res: SignTransactionResponse | Error = await ual.activeUser
+			.signTransaction(
+				{
+					actions: [
+						{
+							account: BLOCKCHAIN.DAPP_CONTRACT,
+							name: "claimmch",
+							authorization: [{ actor: ual.activeUser.accountName, permission: ual.activeUser.requestPermission }],
+							data: { asset_ids: ready.map(t => t.asset_id) },
+						},
+					],
+				},
+				{ broadcast: true, blocksBehind: 3, expireSeconds: 1800 }
+			)
+			.then(res => res)
+			.catch(error => error);
+
+		if (res instanceof Error) {
+			setAlert(res.message, "red-900");
+		} else {
+			setAlert("Claimed successfully", "lime-800");
+			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
 			refresh();
 		}
 	};
@@ -92,6 +130,17 @@ export function Dashboard(): JSX.Element {
 				].map(({ tools, name }) => (
 					<div key={name} className="flex flex-col">
 						<h1 className="text-center text-xl font-bold text-white p-2">{name}</h1>
+
+						<div className="flex flex-row flex-wrap justify-center">
+							<div className="flex flex-row flex-wrap justify-center">
+								<button
+									onClick={() => claimReady(tools)}
+									className="flex-1 my-1 p-2 text-gray-400 text-sm self-center rounded bg-slate-900 hover:bg-slate-700"
+								>
+									Claim All
+								</button>
+							</div>
+						</div>
 
 						<div className="flex flex-row flex-wrap justify-center">
 							{!tools && <Loader />}

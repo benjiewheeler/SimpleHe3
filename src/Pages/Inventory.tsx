@@ -44,10 +44,8 @@ export function Inventory(): JSX.Element {
 			.catch(error => error);
 
 		if (res instanceof Error) {
-			// showPopup("error", res.message);
 			setAlert(res.message, "red-900");
 		} else {
-			// showPopup("success", "Asset removed successfully");
 			setAlert("Asset installed successfully", "lime-800");
 			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
 			setStorageItem(`assets.${ual.activeUser?.accountName}`, null, -1);

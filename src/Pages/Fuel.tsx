@@ -98,11 +98,10 @@ export function Fuel(props: { asset: string }): JSX.Element {
 		const success = await performAction("deposittkn", tool, quantities);
 
 		if (success) {
-			// showPopup("success", "Asset removed successfully");
 			setAlert("Tokens deposited successfully", "lime-800");
-			history.push("/dashboard");
-
 			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
+
+			history.push("/dashboard");
 			forceRefresh(Math.random());
 		}
 	};
@@ -116,11 +115,10 @@ export function Fuel(props: { asset: string }): JSX.Element {
 		const success = await performAction("withdraw", tool, quantities);
 
 		if (success) {
-			// showPopup("success", "Asset removed successfully");
 			setAlert("Tokens withdrawn successfully", "lime-800");
-			history.push("/dashboard");
-
 			setStorageItem(`tools.${ual.activeUser?.accountName}`, null, -1);
+
+			history.push("/dashboard");
 			forceRefresh(Math.random());
 		}
 	};
