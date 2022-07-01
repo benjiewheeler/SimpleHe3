@@ -52,11 +52,10 @@ export function Fuel(props: { asset: string }): JSX.Element {
 	};
 
 	const updateBalance = (symbol: string, amount: number) => {
-		const bals = { ...balances };
-		console.log(bals);
-		bals[symbol].amount = amount;
-		console.log(bals);
-		setBalances(bals);
+		setBalances(prev => {
+			prev[symbol] = { ...prev[symbol], amount };
+			return prev;
+		});
 	};
 
 	const performAction = async (name: string, tool: Tool, quantities: Token[]): Promise<boolean> => {
@@ -196,7 +195,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 						<button
 							disabled
 							onClick={() => withdrawAssets(tool, Object.values(balances))}
-							className="mx-0.5 flex-1 p-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
+							className="disabled:text-gray-800 disabled:cursor-not-allowed mx-0.5 flex-1 p-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
 						>
 							Withdraw
 						</button>
