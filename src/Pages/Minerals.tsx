@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { SignTransactionResponse } from "universal-authenticator-library";
+import { Loader } from "../Components/Loader";
 import { AppCtx, BLOCKCHAIN } from "../constants";
 import { Mineral, ShopConfig, Token } from "../types";
 import {
@@ -110,7 +111,7 @@ export function Minerals(): JSX.Element {
 	if (!shopItems?.length)
 		return (
 			<div className="flex flex-col flex-grow h-full w-full p-4 text-center">
-				<span className="text-white text-base">Loading...</span>
+				<Loader />
 			</div>
 		);
 

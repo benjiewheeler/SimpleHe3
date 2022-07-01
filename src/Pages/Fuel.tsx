@@ -2,6 +2,7 @@ import _ from "lodash";
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { SignTransactionResponse } from "universal-authenticator-library";
+import { Loader } from "../Components/Loader";
 import { AppCtx, BLOCKCHAIN } from "../constants";
 import { Token, Tool } from "../types";
 import {
@@ -127,7 +128,7 @@ export function Fuel(props: { asset: string }): JSX.Element {
 	if (!accountBalances || !tool)
 		return (
 			<div className="flex flex-col flex-grow h-full w-full p-4 text-center">
-				<span className="text-white text-base">Loading...</span>
+				<Loader />
 			</div>
 		);
 

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Countdown from "react-countdown";
 import { Link } from "react-router-dom";
 import { SignTransactionResponse } from "universal-authenticator-library";
+import { Loader } from "../Components/Loader";
 import { AppCtx, BLOCKCHAIN, BUILDING_SCHEMAS, MACHINE_SCHEMAS, RARITIES } from "../constants";
 import { Tool } from "../types";
 import {
@@ -16,8 +17,8 @@ import {
 
 export function Dashboard(): JSX.Element {
 	const { ual, waxEndpoint, atomicEndpoint, refreshNonce } = useContext(AppCtx);
-	const [buildings, setBuildings] = useState<Tool[]>([]);
-	const [machines, setMachines] = useState<Tool[]>([]);
+	const [buildings, setBuildings] = useState<Tool[]>(null);
+	const [machines, setMachines] = useState<Tool[]>(null);
 
 	useEffect(() => {
 		if (ual.activeUser) refresh();
@@ -90,9 +91,11 @@ export function Dashboard(): JSX.Element {
 				].map(({ tools, name }) => (
 					<div key={name} className="flex flex-col">
 						<h1 className="text-center text-xl font-bold text-white p-2">{name}</h1>
+
 						<div className="flex flex-row flex-wrap justify-center">
+							{!tools && <Loader />}
 							{tools
-								.sort((a, b) => RARITIES[a.rarity] - RARITIES[b.rarity])
+								?.sort((a, b) => RARITIES[a.rarity] - RARITIES[b.rarity])
 								.map(t => (
 									<div key={t.asset_id} className="flex flex-col rounded p-1 m-1 border border-slate-700">
 										<div className="flex flex-col relative">

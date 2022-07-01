@@ -4,11 +4,12 @@ import { AppCtx, BLOCKCHAIN, BUILDING_SCHEMAS, MACHINE_SCHEMAS, RARITIES } from 
 import { AtomicAsset, ContractAsset } from "../types";
 import { fetchPlayerAssets, fetchPlayerTools, setStorageItem } from "../utils";
 import _ from "lodash";
+import { Loader } from "../Components/Loader";
 
 export function Inventory(): JSX.Element {
 	const { ual, waxEndpoint, atomicEndpoint, refreshNonce } = useContext(AppCtx);
-	const [buildings, setBuildings] = useState<AtomicAsset[]>([]);
-	const [machines, setMachines] = useState<AtomicAsset[]>([]);
+	const [buildings, setBuildings] = useState<AtomicAsset[]>(null);
+	const [machines, setMachines] = useState<AtomicAsset[]>(null);
 	const [usedTools, setUsedTools] = useState<ContractAsset[]>([]);
 
 	useEffect(() => {
@@ -64,6 +65,7 @@ export function Inventory(): JSX.Element {
 					<div key={name} className="flex flex-col">
 						<h1 className="text-center text-xl font-bold text-white p-2">{name}</h1>
 						<div className="flex flex-row flex-wrap justify-center">
+							{!tools && <Loader />}
 							{_(tools)
 								.orderBy(
 									[a => usedTools.find(t => t.asset_id == a.asset_id), a => RARITIES[a.rarity], "name", "mint"],
