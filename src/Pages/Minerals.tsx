@@ -119,31 +119,8 @@ export function Minerals(): JSX.Element {
 		<>
 			<div className="flex flex-col">
 				<div className="flex flex-col">
-					<h1 className="text-center text-xl font-bold text-white p-2">Minerals</h1>
-					<div className="flex flex-row flex-wrap justify-center">
-						{minerals.map(m => (
-							<div key={m.asset_id} className="flex flex-col rounded p-1 m-1 border border-slate-700">
-								<div className="flex flex-col relative">
-									<span className="absolute text-xs text-white bg-black font-mono border border-neutral-600 rounded p-1">
-										#{m.mint}
-									</span>
-									<img className="max-w-none w-36" src={`https://ipfs.hivebp.io/thumbnail?hash=${m.img}`} alt={m.name} />
-									<span className="text-center text-sm text-white">{m.name}</span>
-									<div className="flex flex-row justify-evenly mt-1">
-										<button
-											onClick={() => burnMineral(m)}
-											className="flex-1 my-1 p-0.5 text-gray-400 text-xs self-center rounded bg-slate-900 hover:bg-red-900"
-										>
-											Burn
-										</button>
-									</div>
-								</div>
-							</div>
-						))}
-					</div>
-				</div>
-				<div className="flex flex-col">
-					<h1 className="text-center text-xl font-bold text-white p-2">Resources</h1>
+                <h1 className="text-center text-xl font-bold text-white p-2">Resources</h1>
+                <span className="text-center italic text-slate-400 text-sm pb-2">*HEL is the blend token</span>
 					<div className="flex flex-row flex-wrap justify-center">
 						{accountBalances.map((tok, i) => (
 							<div key={`res-tok-${i}`} className="flex flex-col mb-2 px-1">
@@ -170,6 +147,32 @@ export function Minerals(): JSX.Element {
 								</div>
 							</div>
 						))}
+					</div>
+				</div>
+				<div className="flex flex-col">
+					<h1 className="text-center text-xl font-bold text-white p-2">Minerals</h1>
+					<div className="flex flex-row flex-wrap justify-center">
+						{minerals
+							?.sort((a, b) => a.template_id - b.template_id)
+							?.map(m => (
+								<div key={m.asset_id} className="flex flex-col rounded p-1 m-1 border border-slate-700">
+									<div className="flex flex-col relative">
+										<span className="absolute text-xs text-white bg-black font-mono border border-neutral-600 rounded p-1">
+											#{m.mint}
+										</span>
+										<img className="max-w-none w-36" src={`https://ipfs.hivebp.io/thumbnail?hash=${m.img}`} alt={m.name} />
+										<span className="text-center text-sm text-white">{m.name}</span>
+										<div className="flex flex-row justify-evenly mt-1">
+											<button
+												onClick={() => burnMineral(m)}
+												className="flex-1 my-1 p-0.5 text-gray-400 text-xs self-center rounded bg-slate-900 hover:bg-red-900"
+											>
+												Burn
+											</button>
+										</div>
+									</div>
+								</div>
+							))}
 					</div>
 				</div>
 			</div>

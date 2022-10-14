@@ -106,6 +106,8 @@ export function Fuel(props: { asset: string }): JSX.Element {
 	};
 
 	const withdrawAssets = async (tool: Tool, quantities: Token[]): Promise<void> => {
+		console.log(quantities);
+
 		if (!quantities.filter(tok => tok.amount > 0).length) {
 			setAlert("You must withdraw at least 1 resource", "red-900");
 			return;
@@ -193,7 +195,6 @@ export function Fuel(props: { asset: string }): JSX.Element {
 							Deposit
 						</button>
 						<button
-							disabled
 							onClick={() => withdrawAssets(tool, Object.values(balances))}
 							className="disabled:text-gray-800 disabled:cursor-not-allowed mx-0.5 flex-1 p-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
 						>
