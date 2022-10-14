@@ -1,10 +1,10 @@
+import _ from "lodash";
 import { useContext, useEffect, useState } from "react";
 import { SignTransactionResponse } from "universal-authenticator-library";
+import { Loader } from "../Components/Loader";
 import { AppCtx, BLOCKCHAIN, BUILDING_SCHEMAS, MACHINE_SCHEMAS, RARITIES } from "../constants";
 import { AtomicAsset, ContractAsset } from "../types";
 import { fetchPlayerAssets, fetchPlayerTools, setStorageItem } from "../utils";
-import _ from "lodash";
-import { Loader } from "../Components/Loader";
 
 export function Inventory(): JSX.Element {
 	const { ual, waxEndpoint, atomicEndpoint, refreshNonce, setAlert } = useContext(AppCtx);

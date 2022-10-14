@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import Countdown from "react-countdown";
 import { Link } from "react-router-dom";
 import { SignTransactionResponse } from "universal-authenticator-library";
-import { Alert } from "../Components/Alert";
 import { Loader } from "../Components/Loader";
 import { AppCtx, BLOCKCHAIN, BUILDING_SCHEMAS, MACHINE_SCHEMAS, RARITIES } from "../constants";
 import { Tool } from "../types";

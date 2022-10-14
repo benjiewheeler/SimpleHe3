@@ -59,6 +59,7 @@ export type ToolConfig = {
 };
 
 export type ShopConfig = {
+	id: number;
 	template_id: number;
 	price: Token;
 };

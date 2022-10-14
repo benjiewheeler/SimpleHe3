@@ -88,7 +88,7 @@ export function Minerals(): JSX.Element {
 							authorization: [{ actor: ual.activeUser.accountName, permission: ual.activeUser.requestPermission }],
 							data: {
 								player: ual.activeUser.accountName,
-								id: shopItems.find(item => item.price.symbol == token.symbol).template_id,
+								id: shopItems.find(item => item.price.symbol == token.symbol).id,
 								quantity: Number(balances.find(b => b.symbol == token.symbol).amount) / 100,
 							},
 						},

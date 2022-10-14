@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AssetTemplate, CacheObject, ContractAsset, AtomicAsset, ShopConfig, Token, ToolConfig } from "./types";
+import { AssetTemplate, AtomicAsset, CacheObject, ContractAsset, ShopConfig, Token, ToolConfig } from "./types";
 
 /**
  * Store data in the browser's localStorage
@@ -221,10 +221,7 @@ export const fetchShopConfigs = async (endpoint: string): Promise<ShopConfig[]> 
 		}
 	);
 
-	const items = [...response.data.rows].map<ShopConfig>(({ template_id, price }) => ({
-		template_id,
-		price: parseToken(price),
-	}));
+	const items = [...response.data.rows].map<ShopConfig>(({ id, template_id, price }) => ({ id, template_id, price: parseToken(price) }));
 
 	setStorageItem<ShopConfig[]>(`shopconfigs`, items, 3600);
 	return items;
