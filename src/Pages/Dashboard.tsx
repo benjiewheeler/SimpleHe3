@@ -130,19 +130,22 @@ export function Dashboard(): JSX.Element {
 					<div key={name} className="flex flex-col">
 						<h1 className="text-center text-xl font-bold text-white p-2">{name}</h1>
 
-						<div className="flex flex-row flex-wrap justify-center">
+						{tools?.length > 0 && (
 							<div className="flex flex-row flex-wrap justify-center">
-								<button
-									onClick={() => claimReady(tools)}
-									className="flex-1 my-1 p-2 text-gray-400 text-sm self-center rounded bg-slate-900 hover:bg-slate-700"
-								>
-									Claim All
-								</button>
+								<div className="flex flex-row flex-wrap justify-center">
+									<button
+										onClick={() => claimReady(tools)}
+										className="flex-1 my-1 p-2 text-gray-400 text-sm self-center rounded bg-slate-900 hover:bg-slate-700"
+									>
+										Claim All
+									</button>
+								</div>
 							</div>
-						</div>
+						)}
 
 						<div className="flex flex-row flex-wrap justify-center">
 							{!tools && <Loader />}
+							{tools && !tools?.length && <span className="text-center text-lg text-yellow-500 p-2">No {name} installed</span>}
 							{tools
 								?.sort((a, b) => RARITIES[a.rarity] - RARITIES[b.rarity])
 								.map(t => (
@@ -183,19 +186,15 @@ export function Dashboard(): JSX.Element {
 														res: t.token_reserve.map(t => parseToken(t)).find(t => t.symbol == tok.symbol),
 													}))
 													.map(({ inp, res }, i) => (
-														<span
+														<div
 															key={`${t.asset_id}-${i}`}
-															className={`mx-0.5 p-1 text-xs rounded ${
+															className={`flex flex-col flex-1 text-center mx-0.5 rounded ${
 																res.amount < inp.amount ? "bg-red-900" : "bg-lime-800"
 															}`}
 														>
-															{formatTokenDisplay(
-																adjustTokenSymbol({
-																	amount: `${res.amount} / ${inp.amount}`,
-																	symbol: res.symbol,
-																})
-															)}
-														</span>
+															<span className="text-xs font-bold pt-0.5">{adjustTokenSymbol({ symbol: res.symbol, amount: 0 }).symbol}</span>
+															<span className="text-xs pb-0.5">{`${res.amount} / ${inp.amount}`}</span>
+														</div>
 													))}
 											</div>
 										</div>

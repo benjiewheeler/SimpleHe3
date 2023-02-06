@@ -53,8 +53,8 @@ export const ENDPOINTS = {
 
 export const RARITIES = { Metal: 1, Jadeite: 2, Silver: 3, Gold: 4, Helium: 5 };
 
-export const BUILDING_SCHEMAS = ["buildingphoe", "buildingaqua", "buildingterr", "buildingpega"];
-export const MACHINE_SCHEMAS = ["machinephoe", "machineaqua", "machineterra", "machinepegas"];
+export const BUILDING_SCHEMAS = ["buildingphoe", "buildingaqua", "buildingterr", "buildingpega", "syndicatef2p"];
+export const MACHINE_SCHEMAS = ["machinephoe", "machineaqua", "machineterra", "machinepegas", "syndicatmf2p"];
 
 export interface AppContextInterface {
 	ual: UAL;

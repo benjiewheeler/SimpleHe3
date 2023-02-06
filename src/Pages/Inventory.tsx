@@ -64,10 +64,17 @@ export function Inventory(): JSX.Element {
 						<h1 className="text-center text-xl font-bold text-white p-2">{name}</h1>
 						<div className="flex flex-row flex-wrap justify-center">
 							{!tools && <Loader />}
+							{tools && !tools?.length && <span className="text-center text-lg text-yellow-500 p-2">No {name} available</span>}
 							{_(tools)
 								.orderBy(
-									[a => usedTools.find(t => t.asset_id == a.asset_id), a => RARITIES[a.rarity], "name", "mint"],
-									["desc", "desc", "asc", "asc"]
+									[
+										a => usedTools.find(t => t.asset_id == a.asset_id),
+										a => RARITIES[a.rarity],
+										a => a.name,
+										a => a.mint,
+										a => a.schema_name,
+									],
+									["desc", "desc", "asc", "asc", "asc"]
 								)
 								.value()
 								.map(a => (
