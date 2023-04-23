@@ -139,7 +139,7 @@ export function Minerals(): JSX.Element {
 								<div className="flex flex-row justify-evenly mt-1">
 									<button
 										onClick={() => mintMineral(tok)}
-										disabled={tok.amount < 100}
+										disabled={Number(tok.amount) < 100}
 										className="disabled:text-gray-800 disabled:cursor-not-allowed flex-1 my-1 px-0.5 py-2 text-gray-400 text-sm rounded bg-slate-900 hover:bg-gray-700"
 									>
 										Mint
